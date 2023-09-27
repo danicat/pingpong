@@ -1,11 +1,18 @@
 package main
 
-import "net/http"
+import (
+	"flag"
+	"log"
+	"net/http"
+)
+
+var addr = flag.String("addr", ":8080", "defines the address to listen for requests")
 
 func main() {
-	http.HandleFunc("/ping",
-		func(w http.ResponseWriter, req *http.Request) {
-			w.Write([]byte(`{"message":"pong"}`))
-		})
-	http.ListenAndServe(":8080", nil)
+	flag.Parse()
+
+	s := NewServer()
+
+	log.Printf("starting server on: %s", *addr)
+	http.ListenAndServe(*addr, s)
 }
