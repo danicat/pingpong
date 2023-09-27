@@ -5,7 +5,10 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 )
 
 // build flags
@@ -17,6 +20,8 @@ func main() {
 	flag.Parse()
 
 	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGINT, syscall.SIGABRT, syscall.SIGTERM)
+	defer stop()
 
 	err := run(ctx, *addr)
 	if err != nil {
